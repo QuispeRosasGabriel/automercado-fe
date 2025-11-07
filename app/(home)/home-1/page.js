@@ -17,7 +17,7 @@ import Testimonial from "@/app/components/common/Testimonial";
 import Partner from "@/app/components/common/Partner";
 import Counter from "@/app/components/home/home-1/Counter";
 import { useMostWantedVehicles, usePopularListing } from "@/app/hooks";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 // export const metadata = {
@@ -25,7 +25,7 @@ import { useSearchParams } from "next/navigation";
 //   description: `AutoMercado - Tu tienda de autos de confianza. `,
 // };
 
-const Home_1 = () => {
+const HomeContent = () => {
   // const {data} = useMostWantedVehicles();
   // const {data: popularListing} = usePopularListing();
   const searchParams = useSearchParams();
@@ -42,7 +42,6 @@ const Home_1 = () => {
         modal.show();
       }
     });
-
   }, [isComingFromRecoverPassword]);
 
   return (
@@ -264,4 +263,10 @@ const Home_1 = () => {
   );
 };
 
-export default Home_1;
+export default function Home_1() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <HomeContent />
+    </Suspense>
+  );
+}
