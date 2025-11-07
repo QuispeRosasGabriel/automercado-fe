@@ -1,4 +1,40 @@
+"use client";
+
+import axiosClient from "@/utils/axiosClient";
+import { useEffect, useState } from "react";
+
 const HeaderTop = () => {
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    const storedUser = localStorage?.getItem("user");
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) throw new Error("No hay accessToken en localStorage");
+
+      await axiosClient.post(
+        "/user/logout",
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/";
+    } catch (error) {
+      toast.error("Error al cerrar sesión:", error);
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+  };
+
   const socialData = [
     {
       icon: "fab fa-facebook-f",
@@ -63,15 +99,23 @@ const HeaderTop = () => {
                     </a>
                   </li>
                 ))}
-                <li className="list-inline-item">
-                  <a
-                    href="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#logInModal"
-                  >
-                    Inicia Sesion
-                  </a>
-                </li>
+                {!user ? (
+                  <li className="list-inline-item">
+                    <a
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#logInModal"
+                    >
+                      Inicia Sesión
+                    </a>
+                  </li>
+                ) : (
+                  <li className="list-inline-item">
+                    <a href="#" onClick={handleLogout}>
+                      Cerrar Sesión
+                    </a>
+                  </li>
+                )}
                 {/* <li className="list-inline-item">
                   <a
                     href="#"

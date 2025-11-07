@@ -6,7 +6,7 @@ const Overview = () => {
     { label: "Traccion", value: "4x4" },
     { label: "Transmision", value: "Automatico" },
     { label: "Estado", value: "Usado" },
-    { label: "Ano", value: "2021" },
+    { label: "Año", value: "2021" },
     { label: "Kilometraje", value: "280,000" },
     { label: "Tipo de Gasolina", value: "Diesel" },
     { label: "Motor", value: "5.2L" },

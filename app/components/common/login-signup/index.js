@@ -20,7 +20,15 @@ const tabs = [
     title: "Registro",
     id: "profile",
     content: (
-      <div className="sign_up_form">
+      <div
+        className="sign_up_form"
+        style={{
+          overflowX: "auto",
+          maxHeight: "320px",
+          scrollbarGutter: "stable",
+          whiteSpace:"nowrap"
+        }}
+      >
         <p>
           Tienes ya una cuenta? <Link href="/login">Inicia Sesion.</Link>
         </p>
@@ -44,7 +52,10 @@ const LoginSignupModal = () => {
         </div>
         {/* End Modal close button */}
 
-        <div className="modal-body container p60">
+        <div
+          className="modal-body container p60"
+          style={{ maxHeight: "500px" }}
+        >
           <div className="row">
             <div className="col-lg-12">
               <ul

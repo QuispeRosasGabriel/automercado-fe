@@ -2,49 +2,45 @@
 
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import axiosClient from "@/utils/axiosClient";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
-    if (!email || !password) {
-      setError("Por favor, completa todos los campos.");
+    if (!email?.trim() || !password?.trim()) {
+      toast.warning("Por favor, completa todos los campos.");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5002/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const { data } = await axiosClient.post("/user/login", {
+        email,
+        password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Credenciales inválidas.");
+      if (!data?.accessToken) {
+        toast.error(data.message || "Credenciales inválidas.");
         return;
       }
 
-      // Guardar token JWT en localStorage
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      setSuccess("Inicio de sesión exitoso 🎉");
+      toast.success("Inicio de sesión exitoso.", {
+        autoClose: 1500,
+      });
 
-      // Redirigir o refrescar la página según tu flujo
-      // window.location.href = "/dashboard";
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
     } catch (err) {
-      console.error(err);
-      setError("Error al conectar con el servidor.");
+      toast.error("Credenciales incorrectas.");
     }
   };
 
@@ -89,18 +85,14 @@ const LoginForm = () => {
           type="checkbox"
           className="custom-control-input"
           id="exampleCheck3"
-          required
         />
         <label className="custom-control-label" htmlFor="exampleCheck3">
           Recuerdame
         </label>
-        <a className="btn-fpswd float-end" href="#">
-          Olvidaste tu contasena?
+        <a className="btn-fpswd float-end" href="/forgot-password">
+          Olvidaste tu contaseña?
         </a>
       </div>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
 
       <button type="submit" className="btn btn-log btn-thm mt5">
         Iniciar Sesion

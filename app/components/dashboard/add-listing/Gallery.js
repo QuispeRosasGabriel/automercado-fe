@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const Gallery = () => {
+const Gallery = ({ handleChange, vehicleData }) => {
   const [selectedImages, setSelectedImages] = useState([]);
 
   const handleImageChange = (event) => {
@@ -52,7 +52,8 @@ const Gallery = () => {
                 placeholder="UPLOAD FILES"
                 multiple
                 accept=".png, .jpg, .jpeg" // Specify accepted file types
-                onChange={handleImageChange}
+                value={vehicleData.image}
+                onChange={handleChange}
               />
               <span>UPLOAD FILES</span>
             </span>

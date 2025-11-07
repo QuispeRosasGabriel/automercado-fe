@@ -26,7 +26,6 @@ const ListingV3 = () => {
     const getVehicles = async () => {
       try {
         const response = await axios.get('http://localhost:5002/api/vehicles');
-        console.log("Fetched vehicles:", response.data);
       } catch (error) {
         console.error("Error fetching vehicles:", error);
       }

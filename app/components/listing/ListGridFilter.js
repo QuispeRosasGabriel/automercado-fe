@@ -4,7 +4,7 @@ const ListGridFilter = () => {
     "Mayor Precio",
     "Menor Precio",
     "Menor Kilometraje",
-    "Ano Mas Reciente",
+    "Año Mas Reciente",
   ];
 
   const selectOptions = options.map((option, index) => (

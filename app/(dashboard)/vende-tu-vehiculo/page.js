@@ -1,3 +1,5 @@
+"use client";
+
 import DashboardHeader from "@/app/components/common/DashboardHeader";
 import DashboardHeaderTop from "@/app/components/common/DashboardHeaderTop";
 import DashboardSidebarMenu from "@/app/components/common/DashboardSidebarMenu";
@@ -9,17 +11,69 @@ import Additional from "@/app/components/dashboard/add-listing/Additional";
 import CarFeatures from "@/app/components/dashboard/add-listing/CarFeatures";
 import LocationInfo from "@/app/components/dashboard/add-listing/LocationInfo";
 import Gallery from "@/app/components/dashboard/add-listing/Gallery";
+import { useState } from "react";
+import axiosClient from "@/utils/axiosClient";
+import { toast } from "react-toastify";
 
-export const metadata = {
-  title: "Vende Tu Vehiculo || Automercado.pe",
-};
+/* export const metadata = {
+  title: "Vende tu vehículo || Automercado.pe",
+}; */
 
 const AddListings = () => {
+  const [vehicleData, setVehicleData] = useState({
+    userId: "",
+    km: null,
+    color: "",
+    brand: "",
+    model: "",
+    year: null,
+    type: "",
+    lastMaintenanceDate: "",
+    nextMaintenanceDate: "",
+    price: null,
+    verified: false,
+    description: "",
+    transmission: "",
+    status: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setVehicleData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const userId = "690a6fdb4cdd70f356f748b0";
+      const payload = { ...vehicleData, userId };
+
+      const { data, response } = await axiosClient.post(
+        "/vehicles/create-vehicle",
+        payload
+      );
+
+      if (!data) {
+        toast.error(
+          response.data.message || "Error al enviar el enlace de reinicio."
+        );
+        return;
+      }
+      toast.success("Vehículo publicado exitosamente");
+    } catch (err) {
+      toast.error(`Error al crear vehículo: ${err.response?.data?.message}`);
+    }
+  };
+
   return (
     <div className="wrapper">
       <div
         className="offcanvas offcanvas-end"
-        tabIndex="-1"
+        tabIndex={-1}
         id="offcanvasRight"
         aria-labelledby="offcanvasRightLabel"
       >
@@ -64,80 +118,102 @@ const AddListings = () => {
               <div className="row">
                 <div className="col-xl-8">
                   <div className="breadcrumb_content mb50">
-                    <h2 className="breadcrumb_title">Vende Tu Vehiculo</h2>
-                    <p>Completa Los Siguientes Campos</p>
+                    <h2 className="breadcrumb_title">Vende tu vehículo</h2>
+                    <p>
+                      Completa los siguientes campos para publicar tu anuncio
+                    </p>
                   </div>
                 </div>
               </div>
               {/* End .row */}
-
-              <div className="row">
+              <form onSubmit={handleSubmit} className="row">
+                {/* Información adicional */}
                 <div className="col-lg-12">
                   <div className="new_property_form">
                     {/* <h4 className="title mb30">Additional</h4> */}
-                    <Additional />
+                    <Additional
+                      handleChange={handleChange}
+                      vehicleData={vehicleData}
+                    />
                   </div>
                 </div>
                 {/* End col-12 Additional */}
 
+                {/* Características del vehículo */}
                 <div className="col-lg-12">
                   <div className="new_property_form">
                     <div className="row">
                       <div className="col-lg-12">
-                        <h4 className="title mb30">Select Your Car Features</h4>
+                        <h4 className="title mb30">
+                          Selecciona las características de tu coche
+                        </h4>
                       </div>
-                      <CarFeatures />
+                      <CarFeatures
+                        handleChange={handleChange}
+                        vehicleData={vehicleData}
+                      />
                     </div>
                   </div>
                 </div>
                 {/* End col-12 CarFeatures */}
 
+                {/* Galería */}
                 <div className="col-lg-12">
                   <div className="new_property_form">
                     <div className="row">
                       <div className="col-lg-12">
-                        <h4 className="title mb30">Gallery</h4>
+                        <h4 className="title mb30">Galería</h4>
                       </div>
-                      {/* End .col-12 */}
 
                       <div className="col-lg-12">
-                        <label className="form-label">Featured Image</label>
-                        <Gallery />
+                        <label className="form-label">Imagen destacada</label>
+                        <Gallery
+                          handleChange={handleChange}
+                          vehicleData={vehicleData}
+                        />
                       </div>
-                      {/* End .col-12 */}
 
                       <div className="col-md-12">
                         <div className="mb20">
                           <label className="form-label">
-                            Video - copy any online video link e.g. YouTube,
-                            Facebook, Instagram or .mp4
+                            Vídeo - copia el enlace de cualquier vídeo en línea,
+                            por ejemplo: YouTube, Facebook, Instagram o formato
+                            .mp4
                           </label>
                           <input
                             name="form_name"
                             className="form-control form_control"
                             type="text"
-                            placeholder="Video Link"
+                            placeholder="Enlace del vídeo"
                           />
                         </div>
                       </div>
-                      {/* End .col-12 */}
                     </div>
                   </div>
                 </div>
                 {/* End col-12 gallery */}
 
+                {/* Ubicación */}
                 <div className="col-lg-12">
                   <div className="new_property_form">
                     <div className="row">
                       <div className="col-lg-12">
-                        <h4 className="title mb30">Location</h4>
+                        <h4 className="title mb30">Ubicación</h4>
                       </div>
-                      <LocationInfo />
+                      <LocationInfo
+                        handleChange={handleChange}
+                        vehicleData={vehicleData}
+                      />
                     </div>
                   </div>
                 </div>
                 {/* End col-12 loction info */}
-              </div>
+                <div className="text-end mt-4">
+                  <button type="submit" className="btn btn-thm p20">
+                    Publicar vehículo
+                  </button>
+                </div>
+              </form>
               {/* End .row */}
             </div>
           </div>

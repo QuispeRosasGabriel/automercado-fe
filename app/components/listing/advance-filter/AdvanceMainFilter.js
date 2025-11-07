@@ -1,6 +1,6 @@
 const filterOptions = [
   {
-    label: "Ano",
+    label: "Año",
     options: ["1967", "1990", "2000", "2002", "2005", "2010", "2015", "2020"],
     type: "select",
   },

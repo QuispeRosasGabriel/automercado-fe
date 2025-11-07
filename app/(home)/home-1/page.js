@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Blog from "@/app/components/home/home-1/Blog";
 import CarIntro from "@/app/components/home/home-1/CarIntro";
 import Category from "@/app/components/home/home-1/Category";
@@ -17,6 +17,8 @@ import Testimonial from "@/app/components/common/Testimonial";
 import Partner from "@/app/components/common/Partner";
 import Counter from "@/app/components/home/home-1/Counter";
 import { useMostWantedVehicles, usePopularListing } from "@/app/hooks";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 // export const metadata = {
 //   title: "Home-1 || AutoMercado - Tu tienda de autos de confianza",
@@ -26,6 +28,22 @@ import { useMostWantedVehicles, usePopularListing } from "@/app/hooks";
 const Home_1 = () => {
   // const {data} = useMostWantedVehicles();
   // const {data: popularListing} = usePopularListing();
+  const searchParams = useSearchParams();
+  const isComingFromRecoverPassword = searchParams.get(
+    "isComingFromRecoverPassword"
+  );
+
+  useEffect(() => {
+    // Importa Bootstrap dinámicamente en el cliente
+    import("bootstrap/dist/js/bootstrap.bundle.min.js").then((bootstrap) => {
+      const modalElement = document.getElementById("logInModal");
+      if (isComingFromRecoverPassword && modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    });
+
+  }, [isComingFromRecoverPassword]);
 
   return (
     <div className="wrapper ovh">

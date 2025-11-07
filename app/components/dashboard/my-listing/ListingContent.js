@@ -47,7 +47,7 @@ const ListingContent = () => {
                 Modelo
               </th>
               <th className="thead_title" scope="col">
-                Ano
+                Año
               </th>
               <th className="thead_title" scope="col">
                 Transmision

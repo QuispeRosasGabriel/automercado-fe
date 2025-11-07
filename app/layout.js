@@ -7,6 +7,8 @@ import "aos/dist/aos.css";
 import "../public/scss/main.scss";
 import ScrollToTop from "./components/common/ScrollTop";
 import styled from "styled-components";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 if (typeof window !== "undefined") {
   import("bootstrap");
@@ -30,8 +32,18 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <Body cz-shortcut-listen="false">
+      <Body $czShortcutListen="false">
         {children}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="light"
+        />
         <ScrollToTop />
       </Body>
     </html>

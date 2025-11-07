@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
 
-const CarFeatures = () => {
+const CarFeatures = ({ handleChange, vehicleData }) => {
   const features = [
     {
       category: "Comfort",
@@ -66,6 +67,8 @@ const CarFeatures = () => {
                   type="checkbox"
                   className="custom-control-input"
                   id={`customCheck${index}${i}`}
+                  value={vehicleData.category}
+                  onChange={handleChange}
                 />
                 <label
                   className="custom-control-label"

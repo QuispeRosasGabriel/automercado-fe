@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import axiosClient from "@/utils/axiosClient";
+import { toast } from "react-toastify";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +20,6 @@ const SignupForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,13 +28,11 @@ const SignupForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     const { password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden.");
+      toast.error("Las contraseñas no coinciden.");
       return;
     }
     const body = {
@@ -50,18 +48,13 @@ const SignupForm = () => {
       isReseller: formData.isReseller === "yes" ? true : false,
       packageType: "basic",
     };
-    console.log(body);
     try {
-      const res = await fetch("http://localhost:5002/api/user/create-user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      const { data, response } = await axiosClient.post("/user/create-user", {
+        body,
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setSuccess("Cuenta creada exitosamente");
+      if (data) {
+        toast.success("Cuenta creada exitosamente");
         setFormData({
           firstName: "",
           lastName: "",
@@ -74,10 +67,10 @@ const SignupForm = () => {
           isReseller: "",
         });
       } else {
-        setError(data.message || "Error al crear el usuario.");
+        toast.error(response.data.message || "Error al crear el usuario.");
       }
     } catch (err) {
-      setError("Error de conexión con el servidor.");
+      toast.error("Error de conexión con el servidor.");
     }
   };
 
@@ -118,7 +111,7 @@ const SignupForm = () => {
             <div className="">
               <select
                 name="documentType"
-                className="form-control me-2"
+                className="form-select mb20 me-2"
                 value={formData.documentType}
                 onChange={handleChange}
                 required
@@ -171,7 +164,7 @@ const SignupForm = () => {
           <div className="form-group">
             <label className="form-label">¿Eres revendedor?</label>
             <select
-              className="form-control"
+              className="form-select mb20"
               name="isReseller"
               value={formData.isReseller}
               onChange={handleChange}
@@ -243,9 +236,6 @@ const SignupForm = () => {
           </div>
         </div>
       </div>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
 
       <button type="submit" className="btn btn-signup btn-thm mb0">
         Crear Cuenta

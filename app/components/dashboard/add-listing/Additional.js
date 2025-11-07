@@ -1,17 +1,14 @@
-const Additional = () => {
+"use client";
+import React, { useState } from "react";
+
+const Additional = ({ handleChange, vehicleData }) => {
   const formFields = [
-    {
+    /* {
       label: "Titulo",
       name: "form_name",
       type: "text",
       placeholder: "Titulo",
-    },
-    {
-      label: "Estado",
-      name: "condition",
-      type: "select",
-      options: ["Nuevo", "Semi-nuevo"],
-    },
+    }, */
     // {
     //   label: "Type",
     //   name: "type",
@@ -20,7 +17,7 @@ const Additional = () => {
     // },
     {
       label: "Marca",
-      name: "make",
+      name: "brand",
       type: "select",
       options: ["Audi", "Bentley", "BMW", "Ford", "Honda", "Mercedes"],
     },
@@ -31,7 +28,7 @@ const Additional = () => {
       options: ["A3 Sportback", "A4", "A6", "Q5"],
     },
     {
-      label: "Ano",
+      label: "Año",
       name: "year",
       type: "select",
       options: [
@@ -47,10 +44,25 @@ const Additional = () => {
       ],
     },
     {
-      label: "Carroceria",
-      name: "drive_type",
+      label: "Estado",
+      name: "status",
       type: "select",
-      options: ["Convertible", "Coupe", "Hatchback", "Sedan", "SUV"],
+      options: ["Nuevo", "Seminuevo", "Usado"],
+    },
+    {
+      label: "Tipo",
+      name: "type",
+      type: "select",
+      options: [
+        "SUV",
+        "Sedan",
+        "Pickup",
+        "Hatchback",
+        "Coupe",
+        "Van",
+        "Motorcycle",
+        "Convertible",
+      ],
     },
     {
       label: "Transmision",
@@ -60,15 +72,22 @@ const Additional = () => {
     },
     {
       label: "Combustible",
-      name: "fuel_type",
+      name: "fuelType",
       type: "select",
-      options: ["Gasolina", "Diesel", "Electrico", "Hibrido"],
+      options: [
+        "Gasolina",
+        "Diesel",
+        "Electrico",
+        "Hibrido",
+        "Gas Natural",
+        "GLP",
+      ],
     },
     {
       label: "Cilindros",
       name: "cylinders",
       type: "select",
-      options: ["1", "2","4", "6", "8"],
+      options: ["1", "2", "4", "6", "8"],
     },
     {
       label: "Color",
@@ -82,8 +101,18 @@ const Additional = () => {
     //   type: "select",
     //   options: ["Doors", "2 Doors", "3 Doors", "4 Doors", "5 Doors"],
     // },
-    { label: "Precio (USD)", name: "price", type: "number", placeholder: "150 $" },
-    { label: "Kilometraje", name: "mileage", type: "number", placeholder: "100" },
+    {
+      label: "Precio (USD)",
+      name: "price",
+      type: "number",
+      placeholder: "0",
+    },
+    {
+      label: "Kilometraje",
+      name: "km",
+      type: "number",
+      placeholder: "0",
+    },
     // {
     //   label: "Engine Size",
     //   name: "engine_size",
@@ -105,10 +134,15 @@ const Additional = () => {
         <div className="col-sm-6 col-md-4" key={field.name}>
           <div className="ui_kit_select_search add_new_property mb20">
             <label className="form-label">{field.label}</label>
-            <select className="form-select">
-              {/* <option>Select</option> */}
+            <select
+              className="form-select"
+              name={field.name}
+              value={vehicleData[field.name]}
+              onChange={handleChange}
+            >
+              <option value="">Seleccionar</option>
               {field.options.map((option) => (
-                <option key={option} data-tokens={option}>
+                <option key={option} value={option}>
                   {option}
                 </option>
               ))}
@@ -126,6 +160,8 @@ const Additional = () => {
               className="form-control form_control"
               type="text"
               placeholder={field.placeholder}
+              value={vehicleData[field.name]}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -137,14 +173,18 @@ const Additional = () => {
             <label className="form-label">{field.label}</label>
             <input
               name={field.name}
-              className="form-control form_control"
+              className={`form-control form_control ${
+                vehicleData[field.name] ?? ""
+              }`}
               type="number"
               placeholder={field.placeholder}
+              value={vehicleData[field.name]}
+              onChange={handleChange}
             />
           </div>
         </div>
       );
-    }  else if (field.type === "textarea") {
+    } else if (field.type === "textarea") {
       return (
         <div className="col-md-12" key={field.name}>
           <div className="mb20">
@@ -154,7 +194,8 @@ const Additional = () => {
               className="form-control"
               rows={10}
               placeholder={field.placeholder}
-              defaultValue={""}
+              value={vehicleData[field.name]}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -165,11 +206,9 @@ const Additional = () => {
   };
 
   return (
-    <form className="contact_form">
-      <div className="row">
-        {formFields.map((field) => renderFormField(field))}
-      </div>
-    </form>
+    <div className="row">
+      {formFields.map((field) => renderFormField(field))}
+    </div>
   );
 };
 
