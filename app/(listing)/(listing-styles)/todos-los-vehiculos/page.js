@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Footer from "@/app/components/common/Footer";
 import DefaultHeader from "@/app/components/common/DefaultHeader";
 import HeaderSidebar from "@/app/components/common/HeaderSidebar";
@@ -12,28 +12,93 @@ import CarItems from "@/app/components/listing/listing-styles/listing-v3/CarItem
 import FeatureListingSlider from "@/app/components/listing/sidebar/FeatureListingSlider";
 import RecentlyViewed from "@/app/components/listing/sidebar/RecentlyViewed";
 import BannerWidget from "@/app/components/common/BannerWidget";
-import {useGetVehicles} from "@/app/hooks";
-import { useEffect } from "react";
-import axios from "axios";
+import { useGetVehicles } from "@/app/hooks";
+import { useEffect, useState } from "react";
+import axiosClient from "@/utils/axiosClient";
 
 // export const metadata = {
 //   title: "Listing V3 || Voiture - Automotive & Car Dealer NextJS Template",
 // };
 
 const ListingV3 = () => {
-  // const data = useGetVehicles()
-  useEffect(() => {
-    const getVehicles = async () => {
-      try {
-        const response = await axios.get('http://localhost:5002/api/vehicles');
-      } catch (error) {
-        console.error("Error fetching vehicles:", error);
-      }
-    };
-    getVehicles();
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    totalCount: 0,
+  });
+  const [filters, setFilters] = useState({
+    brand: "",
+    model: "",
+    year: "",
+    color: "",
+    type: "",
+    fuelType: "",
+    minPrice: "",
+    maxPrice: "",
+    minKm: "",
+    maxKm: "",
+    page: 1,
+    pageSize: 25,
+    sortBy: "recent",
+  });
 
-  }, [])
-  
+  const getVehicles = async (params = filters) => {
+    try {
+      setLoading(true);
+      const response = await axiosClient.get("/vehicles/filter", { params });
+      setVehicles(response.data?.vehicles || []);
+      setPagination(response.data?.pagination || {});
+    } catch (error) {
+      console.error("Error fetching vehicles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    const updated = { ...filters, page };
+    setFilters(updated);
+    getVehicles(updated);
+  };
+
+  // Cambiar de orden
+  const handleSortChange = (sortBy) => {
+    const updated = { ...filters, sortBy, page: 1 };
+    setFilters(updated);
+    getVehicles(updated);
+  };
+
+  /* const handleSortChange = async (sortOption) => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: sortOption,
+      page: 1,
+    }));
+
+    const filtersUpdatedForSort = {
+      ...filters,
+      sortBy: sortOption,
+      page: 1,
+    };
+
+    try {
+      const response = await axiosClient.get("/vehicles/filter", {
+        params: filtersUpdatedForSort,
+      });
+      setVehicles(response.data?.vehicles || []);
+    } catch (error) {
+      console.error("Error fetching vehicles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+ */
+  useEffect(() => {
+    getVehicles();
+  }, []);
+
   return (
     <div className="wrapper">
       <div
@@ -61,7 +126,11 @@ const ListingV3 = () => {
       {/* Advance_search_menu_sectn*/}
       <section className="advance_search_menu_sectn bgc-thm2 pt20 pb0 mt70-992 filter-style_two">
         <div className="container">
-          <AdvanceFilter />
+          <AdvanceFilter
+            filters={filters}
+            setFilters={setFilters}
+            onSearch={() => getVehicles(filters)}
+          />
         </div>
       </section>
       {/* End Advance_search_menu_sectn*/}
@@ -113,17 +182,27 @@ const ListingV3 = () => {
             {/* End .col-lg-4 */}
 
             <div className="col-lg-8 col-xl-9">
-              <ListGridFilter />
+              <ListGridFilter onSortChange={handleSortChange} />
 
               <div className="row">
-                <CarItems />
+                {loading ? (
+                  <p>Cargando vehículos...</p>
+                ) : vehicles.length > 0 ? (
+                  <CarItems vehicles={vehicles} />
+                ) : (
+                  <p>No se encontraron vehículos.</p>
+                )}
               </div>
               {/* End .row */}
 
               <div className="row">
                 <div className="col-lg-12">
                   <div className="mbp_pagination mt10">
-                    <Pagination />
+                    <Pagination
+                      currentPage={pagination.page}
+                      totalPages={pagination.totalPages}
+                      onPageChange={handlePageChange}
+                    />
                   </div>
                 </div>
               </div>

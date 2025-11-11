@@ -15,7 +15,6 @@ const PUBLIC_ENDPOINTS = ["/user/login", "/user/register"];
 // Request Interceptor
 axiosClient.interceptors.request.use(
   (config) => {
-    console.log("hello interceptor", config);
 
     // Si es una ruta pública, no agregar token
     const isPublic = PUBLIC_ENDPOINTS.some((path) =>

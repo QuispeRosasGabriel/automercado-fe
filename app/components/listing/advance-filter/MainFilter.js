@@ -1,20 +1,24 @@
-const MainFilter = () => {
+const MainFilter = ({ filters, handleChange }) => {
   const filterOptions = [
     {
+      name: "status",
       label: "Estado",
-      values: ["Nuevo", "Usado", "Todos"],
+      value: ["Nuevo", "Seminuevo", "Usado"],
     },
     {
+      name: "brand",
       label: "Marca",
-      values: ["Audi", "Bentley", "BMW", "Ford", "Honda", "Mercedes"],
+      value: ["Audi", "Bentley", "BMW", "Ford", "Honda", "Mercedes"],
     },
     {
+      name: "model",
       label: "Modelo",
-      values: ["A3 Sportback", "A4", "A6", "Q5"],
+      value: ["A3 Sportback", "A4", "A6", "Q5"],
     },
     {
+      name: "type",
       label: "Tipo",
-      values: ["Convertible", "Coupe", "Hatchback", "Sedan", "SUV"],
+      value: ["Convertible", "Coupe", "Hatchback", "Sedan", "SUV"],
     },
   ];
 
@@ -23,10 +27,17 @@ const MainFilter = () => {
       {filterOptions.map((option, index) => (
         <div key={index} className="col-12 col-sm-4 col-lg-2">
           <div className="advance_search_style">
-            <select className="form-select show-tick">
-              <option>{option.label}</option>
-              {option.values.map((value, valueIndex) => (
-                <option key={valueIndex}>{value}</option>
+            <select
+              className="form-select show-tick"
+              name={option.name}
+              value={filters[option.name] || ""}
+              onChange={handleChange}
+            >
+              <option value="">{option.label}</option>
+              {option.value.map((value, valueIndex) => (
+                <option key={valueIndex} value={value}>
+                  {value}
+                </option>
               ))}
             </select>
           </div>

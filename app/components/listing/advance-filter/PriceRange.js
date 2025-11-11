@@ -1,30 +1,40 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputRange from "react-input-range";
 import "react-input-range/lib/css/index.css";
 
-const PriceRange = () => {
-    const [price, setPrice] = useState({ value: { min: 5000, max: 15000 } });
+const PriceRange = ({ filters, setFilters }) => {
+  const [price, setPrice] = useState({
+    min: filters.minPrice || 1000,
+    max: filters.minPrice || 800000,
+  });
 
-    // price range handler
-    const handleOnChange = (value) => {
-        setPrice({ value });
-    };
+  const handleOnChange = (value) => {
+    setPrice(value);
+  };
 
-    return (
-        <div>
-            <InputRange
-                formatLabel={() => ``}
-                maxValue={300000}
-                minValue={1000}
-                value={price.value}
-                onChange={(value) => handleOnChange(value)}
-                id="slider"
-            />
-            <span id="slider-range-value1">${price.value.min}</span>
-            <span id="slider-range-value2">${price.value.max}</span>
-        </div>
-    );
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: price.min,
+      maxPrice: price.max,
+    }));
+  }, [price, setFilters]);
+
+  return (
+    <div>
+      <InputRange
+        formatLabel={() => ``}
+        maxValue={800000}
+        minValue={1000}
+        value={price}
+        onChange={handleOnChange}
+        id="slider"
+      />
+      <span id="slider-range-value1">${price.min.toLocaleString()}</span>
+      <span id="slider-range-value2">${price.max.toLocaleString()}</span>
+    </div>
+  );
 };
 
 export default PriceRange;

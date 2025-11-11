@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import ModalVideo from "react-modal-video";
@@ -9,50 +9,7 @@ import "react-modal-video/scss/modal-video.scss";
 import { FreeMode, Navigation, Thumbs } from "swiper";
 import Image from "next/image";
 
-const slides = [
-  {
-    imageSrc: "/images/listing/lsp1-v1.jpg",
-    videoId: "VWrJkx6O0L8",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v2.jpg",
-    videoId: "TLEyLGWvjII",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v3.jpg",
-    videoId: "BS2jGGYC60c",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v4.jpg",
-    videoId: "8PiZNUCexrA",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg8",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg8f",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg8g",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg8a",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg83",
-  },
-  {
-    imageSrc: "/images/listing/lsp1-v5.jpg",
-    videoId: "m4ZGuAbUMg8f",
-  },
-];
-
-export default function ProductGallery() {
+export default function ProductGallery({ images = [] }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [isOpen, setOpen] = useState(false);
   const [videoId, setVideoId] = useState("");
@@ -62,10 +19,26 @@ export default function ProductGallery() {
     setOpen(true);
   };
 
+  // 🔹 Si no hay imágenes en el vehículo, se usa un arreglo con una imagen por defecto
+  const slides =
+    images.length > 0
+      ? images.map((img) => ({
+          imageSrc: img.url,
+          isMain: img.isMain,
+        }))
+      : [
+          {
+            imageSrc:
+              "https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630",
+            isMain: true,
+          },
+        ];
+
   return (
     <>
       <div className="row">
         <div className="col-lg-12">
+          {/* 🔹 Swiper principal (imagen grande) */}
           <Swiper
             style={{
               "--swiper-navigation-color": "#fff",
@@ -90,9 +63,10 @@ export default function ProductGallery() {
                     style={{ objectFit: "cover" }}
                     className="w-100 h-100"
                     src={slide.imageSrc}
-                    alt="large car"
+                    alt={`Imagen ${index + 1}`}
                   />
 
+                  {/* 🔸 Si quieres mostrar un botón de video sobre la imagen */}
                   {/* <div className="overlay_icon">
                     <button
                       className="video_popup_btn popup-img popup-youtube"
@@ -107,6 +81,7 @@ export default function ProductGallery() {
             ))}
           </Swiper>
 
+          {/* 🔹 Miniaturas debajo del slider */}
           <Swiper
             onSwiper={setThumbsSwiper}
             spaceBetween={10}
@@ -124,7 +99,7 @@ export default function ProductGallery() {
                   priority
                   style={{ objectFit: "cover" }}
                   src={slide.imageSrc}
-                  alt="thum car"
+                  alt={`Miniatura ${index + 1}`}
                 />
               </SwiperSlide>
             ))}
@@ -132,6 +107,7 @@ export default function ProductGallery() {
         </div>
       </div>
 
+      {/* 🔹 Modal de video opcional (actualmente no se usa) */}
       <ModalVideo
         channel="youtube"
         isOpen={isOpen}

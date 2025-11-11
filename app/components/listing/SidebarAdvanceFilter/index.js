@@ -30,7 +30,7 @@ const SidebarAdvnaceFilter = () => {
                 <input type="text" className="form-control" placeholder="Max" />
               </div>
             </li>
-            {/* End milage */}
+            {/* End Km */}
 
             <li>
               <h5 className="subtitle">Price</h5>

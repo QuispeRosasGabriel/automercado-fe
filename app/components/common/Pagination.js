@@ -1,19 +1,17 @@
 "use client";
-import { useState } from "react";
-
-const Pagination = () => {
-  const [currentPage, setCurrentPage] = useState(2);
-  const totalPages = 3;
-  const pages = [];
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  if (!totalPages || totalPages <= 1) return null;
 
   const handleClick = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      onPageChange(page);
+    }
   };
 
+  const pages = [];
   for (let i = 1; i <= totalPages; i++) {
     pages.push(
       <li
-        role="button"
         key={i}
         className={`page-item ${i === currentPage ? "active" : ""}`}
         onClick={() => handleClick(i)}
@@ -24,16 +22,23 @@ const Pagination = () => {
   }
 
   return (
-    <ul className="page_navigation">
-      <li role="button" className="page-item">
+    <ul className="page_navigation d-flex align-items-center justify-content-center gap-1">
+      <li
+        className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+        onClick={() => handleClick(currentPage - 1)}
+      >
         <span className="page-link">
-          <span className="fa fa-arrow-left" />
+          <i className="fa fa-arrow-left" />
         </span>
       </li>
       {pages}
-      <li role="button" className="page-item">
+
+      <li
+        className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
+        onClick={() => handleClick(currentPage + 1)}
+      >
         <span className="page-link">
-          <span className="fa fa-arrow-right" />
+          <i className="fa fa-arrow-right" />
         </span>
       </li>
     </ul>

@@ -3,11 +3,19 @@ import CheckBoxFilter from "./CheckBoxFilter";
 import MainFilter from "./MainFilter";
 import PriceRange from "./PriceRange";
 
-const AdvanceFilter = () => {
+const AdvanceFilter = ({ filters, setFilters, onSearch }) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value === "Todos" ? "" : value, // "Todos" limpia el filtro
+    }));
+  };
+
   return (
     <>
       <div className="row">
-        <MainFilter />
+        <MainFilter filters={filters} handleChange={handleChange} />
 
         <div className="col col-sm-4 col-lg-2">
           <div className="advance_search_style">
@@ -27,18 +35,21 @@ const AdvanceFilter = () => {
 
         <div className="col col-sm-4 col-lg-2">
           <div className="advance_search_style">
-            <a className="btn search_btn btn-thm" href="">
+            <button
+              type="button"
+              className="btn search_btn btn-thm"
+              onClick={onSearch}
+            >
               <span className="flaticon-magnifiying-glass" /> Buscar
-            </a>
+            </button>
           </div>
         </div>
-        {/* End .col */}
       </div>
       {/* End .row */}
 
       <div className="collapse" id="collapseAdvanceSearch">
         <div className="row bgc-thm2">
-          <AdvanceMainFilter />
+          <AdvanceMainFilter filters={filters} handleChange={handleChange} />
         </div>
         {/* End .row */}
 
@@ -47,18 +58,18 @@ const AdvanceFilter = () => {
             <div className="advance_search_style">
               <div className="uilayout_range">
                 <h6 className="ass_price_title text-white text-start">Price</h6>
-                <PriceRange />
+                <PriceRange filters={filters} setFilters={setFilters} />
               </div>
             </div>
           </div>
           {/* End .col */}
 
-          <div className="col-sm-6 col-md-4 col-lg-6 ">
+          {/* <div className="col-sm-6 col-md-4 col-lg-6 ">
             <h6 className="font-600 ass_price_title text-white text-start mb-3">
               Adicionales
             </h6>
             <CheckBoxFilter />
-          </div>
+          </div> */}
           {/* End .col */}
         </div>
       </div>

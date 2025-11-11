@@ -1,3 +1,4 @@
+"use client";
 import Footer from "@/app/components/common/Footer";
 import DefaultHeader from "@/app/components/common/DefaultHeader";
 import HeaderSidebar from "@/app/components/common/HeaderSidebar";
@@ -17,13 +18,49 @@ import ContactSeller from "@/app/components/listing/listing-single/sidebar/Conta
 import SellerDetail from "@/app/components/listing/listing-single/sidebar/SellerDetail";
 import Link from "next/link";
 import ReleatedCar from "@/app/components/listing/listing-single/ReleatedCar";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import axiosClient from "@/utils/axiosClient";
 
-export const metadata = {
+/* export const metadata = {
   title:
     "Listing Single V1 || Voiture - Automotive & Car Dealer NextJS Template",
-};
+}; */
 
 const ListingSingleV1 = () => {
+  const { id } = useParams();
+  const [vehicle, setVehicle] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const getVehicleById = async () => {
+    try {
+      const response = await axiosClient.get(
+        `/vehicles/get-vehicle-by-id/${id}`
+      );
+      setVehicle(response.data.vehicle);
+    } catch (error) {
+      console.error("Error obteniendo vehículo:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) getVehicleById();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" />
+      </div>
+    );
+  }
+
+  if (!vehicle) {
+    return <div className="text-center py-5">Vehículo no encontrado</div>;
+  }
+
   return (
     <div className="wrapper">
       <div
@@ -66,23 +103,34 @@ const ListingSingleV1 = () => {
                 <div className="car_single_content_wrapper">
                   <ul className="car_info mb20-md">
                     <li className="list-inline-item">
-                      <a href="#">NUEVO</a>
+                      {/* status del vehículo */}
+                      <a href="#">{vehicle.status}</a>
                     </li>
                     <li className="list-inline-item">
+                      {/* fecha de publicación */}
                       <a href="#">
-                        <span className="flaticon-clock-1 vam" />Hace 1 semana
+                        <span className="flaticon-clock-1 vam" />
+                        {/* podrías formatear createdAt aquí */}
+                        Publicado:{" "}
+                        {new Date(vehicle.createdAt).toLocaleDateString()}
                       </a>
                     </li>
                     <li className="list-inline-item">
+                      {/* cantidad de vistas si la agregas luego */}
                       <a href="#">
                         <span className="flaticon-eye vam" />
                         13102
                       </a>
                     </li>
                   </ul>
-                  <h2 className="title">Volvo XC 90</h2>
+                  {/* Marca y modelo */}
+                  <h2 className="title">
+                    {vehicle.brand} {vehicle.model}
+                  </h2>
+
+                  {/* tipo de vehículo */}
                   <p className="para">
-                    2.0h T8 11.6kWh Polestar Engineered Auto AWD (s/s) 5dr
+                    {vehicle.type} | {vehicle.year} | {vehicle.fuelType}
                   </p>
                 </div>
               </div>
@@ -97,10 +145,12 @@ const ListingSingleV1 = () => {
                 <div className="price_content">
                   <div className="price mt60 mb10 mt10-md">
                     <h3>
+                      {/* precio del vehículo */}
                       <small className="mr15">
+                        {/* si más adelante quieres mostrar precio anterior, lo puedes poner aquí */}
                         <del>$92,480</del>
                       </small>
-                      $89,480
+                      ${vehicle.price.toLocaleString()}
                     </h3>
                   </div>
                 </div>
@@ -112,13 +162,13 @@ const ListingSingleV1 = () => {
 
           <div className="row">
             <div className="col-lg-8 col-xl-8">
-              <ProductGallery />
+              <ProductGallery images={vehicle.images} />
               {/* End Car Gallery */}
 
               <div className="opening_hour_widgets p30 mt30">
                 <div className="wrapper">
                   <h4 className="title">Informacion Del Vehiculo</h4>
-                  <Overview />
+                  <Overview vehicle={vehicle} />
                 </div>
               </div>
               {/* End opening_hour_widgets */}
@@ -128,17 +178,21 @@ const ListingSingleV1 = () => {
                   Descripcion{" "}
                   <span className="float-end body-color fz13">ID #9535</span>
                 </h4>
-                <Descriptions />
+                {/* descripción del vehículo */}
+                {/*  <Descriptions /> */}
+                <p className="first-para">{vehicle.description}</p>
+                {/* <Descriptions /> */}
               </div>
               {/* End car descriptions */}
 
               <div className="user_profile_service">
+                {/* FALTA DATA PARA ESTO */}
                 <Features />
                 <hr />
                 <div className="row">
                   <div className="col-lg-12">
                     <a className="fz12 tdu color-blue" href="#">
-                      View all features
+                      Ver todas las características
                     </a>
                   </div>
                 </div>
@@ -186,7 +240,7 @@ const ListingSingleV1 = () => {
               {/* End offer_btn
                */}
               <div className="sidebar_seller_contact">
-                <SellerDetail />
+                <SellerDetail seller={vehicle.seller} />
                 <h4 className="mb30">Contactar Al Vendedor</h4>
                 <ContactSeller />
               </div>
