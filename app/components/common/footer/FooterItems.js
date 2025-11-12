@@ -38,7 +38,7 @@ const FooterItems = () => {
 
       <div className="col-sm-6 col-md-6 col-lg-3 col-xl-3">
         <div className="footer_contact_widget">
-          <h5 className="title">Suscribete</h5>
+          <h5 className="title">Suscribeteaaaaaa</h5>
           <form className="footer_mailchimp_form">
             <div className="wrapper">
               <div className="col-auto">

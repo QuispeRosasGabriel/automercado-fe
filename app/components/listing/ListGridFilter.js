@@ -9,7 +9,7 @@ const ListGridFilter = ({ onSortChange }) => {
   ];
 
   const handleSelectChange = (e) => {
-    onSortChange(e.target.value);
+    onSortChange({ sortBy: e.target.value, page: 1 });
   };
 
   return (

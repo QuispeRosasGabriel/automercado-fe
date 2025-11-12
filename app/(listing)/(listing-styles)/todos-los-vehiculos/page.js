@@ -57,18 +57,13 @@ const ListingV3 = () => {
     }
   };
 
-  const handlePageChange = (page) => {
-    const updated = { ...filters, page };
+  const getInstaVehicleFiltered = (filterUpdated) => {
+    const updated = { ...filters, ...filterUpdated };
     setFilters(updated);
     getVehicles(updated);
   };
 
   // Cambiar de orden
-  const handleSortChange = (sortBy) => {
-    const updated = { ...filters, sortBy, page: 1 };
-    setFilters(updated);
-    getVehicles(updated);
-  };
 
   /* const handleSortChange = async (sortOption) => {
     setFilters((prev) => ({
@@ -182,7 +177,7 @@ const ListingV3 = () => {
             {/* End .col-lg-4 */}
 
             <div className="col-lg-8 col-xl-9">
-              <ListGridFilter onSortChange={handleSortChange} />
+              <ListGridFilter onSortChange={getInstaVehicleFiltered} />
 
               <div className="row">
                 {loading ? (
@@ -201,7 +196,7 @@ const ListingV3 = () => {
                     <Pagination
                       currentPage={pagination.page}
                       totalPages={pagination.totalPages}
-                      onPageChange={handlePageChange}
+                      onPageChange={getInstaVehicleFiltered}
                     />
                   </div>
                 </div>

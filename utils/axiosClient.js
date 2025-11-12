@@ -10,7 +10,14 @@ const axiosClient = axios.create({
 });
 
 // Rutas públicas que no requieren token
-const PUBLIC_ENDPOINTS = ["/user/login", "/user/register"];
+const PUBLIC_ENDPOINTS = [
+  "/user/login",
+  "/user/register",
+  "/vehicles/get-vehicle-by-id",
+  "/vehicles/get-all-vehicles",
+  "/vehicles/filter",
+  "/vehicles/user",
+];
 
 // Request Interceptor
 axiosClient.interceptors.request.use(

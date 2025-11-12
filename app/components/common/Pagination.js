@@ -4,7 +4,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   const handleClick = (page) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
-      onPageChange(page);
+      onPageChange({ page });
     }
   };
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const ListingContent = () => {
+const ListingContent = ({ vehicles }) => {
   const carListings = [
     {
       id: 1,
@@ -55,15 +55,14 @@ const ListingContent = () => {
               <th className="thead_title" scope="col">
                 Gasolina
               </th>
-              <th className="thead_title" scope="col">
-              </th>
+              <th className="thead_title" scope="col"></th>
             </tr>
           </thead>
           {/* End thead */}
 
           <tbody>
-            {carListings.map((car) => (
-              <tr key={car.id}>
+            {vehicles.map((car) => (
+              <tr key={car._id}>
                 <th className="align-middle pl20" scope="row">
                   <div className="car-listing bdr_none d-flex mb0">
                     <div className="thumb w150">
@@ -76,19 +75,22 @@ const ListingContent = () => {
                           height: "100%",
                         }}
                         className="img-fluid"
-                        src={car.imageSrc}
-                        alt={car.make}
+                        src={
+                          car.images[0]?.url ||
+                          "https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630"
+                        }
+                        alt={`${car.brand}-${car.model}-${car._id}`}
                       />
                     </div>
                     <div className="details ms-1">
                       <h6 className="title">
-                        <a href="page-car-single-v1.html">{`${car.make} ${car.model} - ${car.year}`}</a>
+                        <a href="page-car-single-v1.html">{`${car.brand} ${car.model} - ${car.year}`}</a>
                       </h6>
                       <h5 className="price">{car.price}</h5>
                     </div>
                   </div>
                 </th>
-                <td className="align-middle">{car.make}</td>
+                <td className="align-middle">{car.brand}</td>
                 <td className="align-middle">{car.year}</td>
                 <td className="align-middle">{car.transmission}</td>
                 <td className="align-middle">{car.fuelType}</td>
