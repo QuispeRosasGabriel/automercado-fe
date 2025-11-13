@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-const Additional = ({ handleChange, vehicleData }) => {
+const Additional = ({ handleChange, vehicleData, errorFields }) => {
   const formFields = [
     /* {
       label: "Titulo",
@@ -30,18 +30,8 @@ const Additional = ({ handleChange, vehicleData }) => {
     {
       label: "Año",
       name: "year",
-      type: "select",
-      options: [
-        // "Year",
-        "1967",
-        "1990",
-        "2000",
-        "2002",
-        "2005",
-        "2010",
-        "2015",
-        "2020",
-      ],
+      type: "year",
+      placeholder: "0",
     },
     {
       label: "Estado",
@@ -92,8 +82,7 @@ const Additional = ({ handleChange, vehicleData }) => {
     {
       label: "Color",
       name: "color",
-      type: "select",
-      options: ["Negro", "Beige", "Marron", "Rojo"],
+      type: "text",
     },
     // {
     //   label: "Doors",
@@ -135,7 +124,9 @@ const Additional = ({ handleChange, vehicleData }) => {
           <div className="ui_kit_select_search add_new_property mb20">
             <label className="form-label">{field.label}</label>
             <select
-              className="form-select"
+              className={`form-control form_control ${
+                errorFields.includes(field.name) ? "border-danger" : ""
+              }`}
               name={field.name}
               value={vehicleData[field.name]}
               onChange={handleChange}
@@ -157,11 +148,35 @@ const Additional = ({ handleChange, vehicleData }) => {
             <label className="form-label">{field.label}</label>
             <input
               name={field.name}
-              className="form-control form_control"
+              className={`form-control form_control ${
+                errorFields.includes(field.name) ? "border-danger" : ""
+              }`}
               type="text"
               placeholder={field.placeholder}
               value={vehicleData[field.name]}
               onChange={handleChange}
+            />
+          </div>
+        </div>
+      );
+    } else if (field.type === "year") {
+      return (
+        <div className="col-sm-6 col-md-4" key={field.name}>
+          <div className="mb20">
+            <label className="form-label">{field.label}</label>
+            <input
+              name={field.name}
+              className={`form-control form_control ${
+                errorFields.includes(field.name) ? "border-danger" : ""
+              }`}
+              type="number"
+              min="1900"
+              max="2099"
+              step="1"
+              placeholder={field.placeholder}
+              value={vehicleData[field.name]}
+              onChange={handleChange}
+              onWheel={(e) => e.target.blur()}
             />
           </div>
         </div>
@@ -174,7 +189,7 @@ const Additional = ({ handleChange, vehicleData }) => {
             <input
               name={field.name}
               className={`form-control form_control ${
-                vehicleData[field.name] ?? ""
+                errorFields.includes(field.name) ? "border-danger" : ""
               }`}
               type="number"
               placeholder={field.placeholder}
@@ -191,7 +206,9 @@ const Additional = ({ handleChange, vehicleData }) => {
             <label className="form-label">{field.label}</label>
             <textarea
               name={field.name}
-              className="form-control"
+              className={`form-control ${
+                errorFields.includes(field.name) ? "border-danger" : ""
+              }`}
               rows={10}
               placeholder={field.placeholder}
               value={vehicleData[field.name]}

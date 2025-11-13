@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 }; */
 
 const AddListings = () => {
+  const [errorFields, setErrorFields] = useState([]);
   const [vehicleData, setVehicleData] = useState({
     userId: "",
     km: null,
@@ -44,10 +45,71 @@ const AddListings = () => {
       ...prev,
       [name]: value,
     }));
+    setErrorFields((prev) => prev.filter((field) => field !== name));
+    console.log("errors", errorFields);
+  };
+
+  const validateFields = () => {
+    const requiredFields = [
+      { field: "brand", label: "Marca" },
+      { field: "model", label: "Modelo" },
+      { field: "price", label: "Precio" },
+      { field: "year", label: "Año" },
+      { field: "type", label: "Tipo" },
+      { field: "color", label: "Color" },
+      { field: "status", label: "Estado" },
+      { field: "fuelType", label: "Tipo de combustible" },
+      { field: "transmission", label: "Transmisión" },
+      { field: "description", label: "Descripción" },
+      { field: "km", label: "Kilometraje" },
+    ];
+
+    const errors = [];
+    const fieldsWithError = [];
+
+    // Validar campos vacíos
+    for (let { field, label } of requiredFields) {
+      const value = vehicleData[field];
+      if (!value || value.toString().trim() === "") {
+        errors.push(`• ${label} es obligatorio.`);
+        fieldsWithError.push(field);
+      }
+    }
+
+    // Validaciones numéricas
+    if (
+      isNaN(vehicleData.year) ||
+      vehicleData.year < 1900 ||
+      vehicleData.year > 2099
+    ) {
+      errors.push(
+        "• El año ingresado no es válido (debe ser entre 1900 y 2099)."
+      );
+      fieldsWithError.push("year");
+    }
+    if (isNaN(vehicleData.price) || vehicleData.price <= 0) {
+      errors.push("• El precio debe ser un número mayor que 0.");
+      fieldsWithError.push("price");
+    }
+
+    // Guardar campos con error
+    setErrorFields(fieldsWithError);
+
+    // Si hay errores, los mostramos todos en un solo toast
+    if (errors.length > 0) {
+      toast.error(errors.join("\n"), {
+        style: { whiteSpace: "pre-line" }, // permite saltos de línea
+      });
+      return false;
+    }
+    // Sin errores
+    setErrorFields([]);
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateFields()) return;
     try {
       const userId = "690a6fdb4cdd70f356f748b0";
       const payload = { ...vehicleData, userId };
@@ -134,6 +196,7 @@ const AddListings = () => {
                     <Additional
                       handleChange={handleChange}
                       vehicleData={vehicleData}
+                      errorFields={errorFields}
                     />
                   </div>
                 </div>
