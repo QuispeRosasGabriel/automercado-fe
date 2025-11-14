@@ -23,6 +23,7 @@ import axiosClient from "@/utils/axiosClient";
 const ListingV3 = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [recentVehicles, setRecentVehicles] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
     totalPages: 1,
@@ -54,6 +55,20 @@ const ListingV3 = () => {
       console.error("Error fetching vehicles:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getRecentVehicles = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) return;
+
+      const { data } = await axiosClient.get(
+        `/user/recent-vehicles/${user.id}`
+      );
+      setRecentVehicles(data?.recentVehicles || []);
+    } catch (error) {
+      console.error("Error fetching recent vehicles:", error);
     }
   };
 
@@ -92,6 +107,7 @@ const ListingV3 = () => {
  */
   useEffect(() => {
     getVehicles();
+    getRecentVehicles();
   }, []);
 
   return (
@@ -168,7 +184,7 @@ const ListingV3 = () => {
 
               <div className="sidebar_recent_viewed_widgets">
                 <h4 className="title">Visto Recientemente</h4>
-                <RecentlyViewed />
+                <RecentlyViewed recentVehicles={recentVehicles} />
               </div>
               {/* End RecentlyViewed */}
 

@@ -28,14 +28,25 @@ import axiosClient from "@/utils/axiosClient";
 }; */
 
 const ListingSingleV1 = () => {
-  const { id } = useParams();
+  const { vehicleId } = useParams();
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const addRecentVehicle = async (vehicleId, userId) => {
+    try {
+      await axiosClient.post("/user/add-recent-vehicle", {
+        userId,
+        vehicleId,
+      });
+    } catch (error) {
+      console.error("Error al agregar vehículo a recientes:", error);
+    }
+  };
 
   const getVehicleById = async () => {
     try {
       const response = await axiosClient.get(
-        `/vehicles/get-vehicle-by-id/${id}`
+        `/vehicles/get-vehicle-by-id/${vehicleId}`
       );
       setVehicle(response.data.vehicle);
     } catch (error) {
@@ -46,8 +57,15 @@ const ListingSingleV1 = () => {
   };
 
   useEffect(() => {
-    if (id) getVehicleById();
-  }, [id]);
+    if (vehicleId) {
+      getVehicleById();
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        addRecentVehicle(vehicleId, user.id);
+      }
+    }
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return (
