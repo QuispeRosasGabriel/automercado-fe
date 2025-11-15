@@ -53,7 +53,7 @@ const EditListings = () => {
         );
         setVehicleData((prev) => ({
           ...prev,
-          ...data.vehicle,
+          ...data?.vehicle,
         }));
       } catch (err) {
         console.error("Error al obtener vehículo:", err);
@@ -73,7 +73,6 @@ const EditListings = () => {
       [name]: value,
     }));
     setErrorFields((prev) => prev.filter((field) => field !== name));
-    console.log("errors", errorFields);
   };
 
   // Validaciones antes de enviar
@@ -156,7 +155,6 @@ const EditListings = () => {
       );
 
       toast.success("Vehículo editado exitosamente");
-      console.log("Vehículo actualizado:", data.vehicle);
     } catch (err) {
       console.error("Error al editar vehículo:", err);
       toast.error(`Error al editar vehículo: ${err.response?.data?.message}`);

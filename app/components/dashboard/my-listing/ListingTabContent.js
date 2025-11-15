@@ -138,7 +138,7 @@ const ListingTabContent = () => {
               {loading ? (
                 <p>Cargando vehículos...</p>
               ) : vehicles.length > 0 ? (
-                <ListingContent vehicles={vehicles} />
+                <ListingContent vehicles={vehicles} setVehicles={setVehicles} />
               ) : (
                 <p>No se encontraron vehículos.</p>
               )}

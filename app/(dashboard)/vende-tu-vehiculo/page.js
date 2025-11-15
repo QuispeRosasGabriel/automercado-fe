@@ -46,7 +46,6 @@ const AddListings = () => {
       [name]: value,
     }));
     setErrorFields((prev) => prev.filter((field) => field !== name));
-    console.log("errors", errorFields);
   };
 
   const validateFields = () => {
